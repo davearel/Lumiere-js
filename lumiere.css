@@ -1,0 +1,53 @@
+.lumiere-vid {
+    
+}
+
+.lumiere-vid .lu_volume {
+    position: relative;
+    display: inline-block;
+    height: 1px;
+    width: 50px;
+    padding: 5px;
+    background: rgba(0,0,0,0.3);
+}
+
+    .lumiere-vid .lu_volume .lu_vol_track {
+        background: #000;
+        position: absolute;
+        height: 1px;
+        width: 50px;
+    }
+
+    .lumiere-vid .lu_volume .lu_vol_handle {
+        background: #fff;
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        top: -2px;
+    }
+
+
+.lumiere-vid .lu_timeline {}
+    .lumiere-vid .lu_timeline .lu_time_track {
+        position: relative;
+        height: 40px;
+        width: 400px;
+        display: block;
+        background: #000;
+    }
+
+    .lumiere-vid .lu_timeline .lu_time_load {
+        position: absolute;
+        background: #333;
+        height: 100%;
+        display: block;
+        width: 0;
+    }
+
+    .lumiere-vid .lu_timeline .lu_time_played {
+        position: absolute;
+        background: #666;
+        display: block;
+        height: 100%;
+        width: 0;
+    }
