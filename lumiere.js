@@ -1,7 +1,13 @@
 
 (function($, exports){
 
-    var Lumiere = function(id) {
+    var 
+    tmpl_cach = {}, tmpl,
+    lumiere_config = {
+        tmpl: '<div class="lumiere-vid"><%= media_tag %><button class="lu_play">play</button><button class="lu_mute">mute</button><span class="lu_currentTime">00:00</span><span class="lu_durationTime">00:00</span><span class="lu_volume" id="volume"><span class="lu_vol_track"><span class="lu_vol_handle"></span></span></span><span class="lu_timeline"><span class="lu_time_track"><span class="lu_time_load"></span><span class="lu_time_played"></span></span></span></div>'
+    },
+
+    Lumiere = function(id) {
         this.id = id;
         this.init();
     };
@@ -11,6 +17,10 @@
 
             this.media = document.getElementById(this.id);
             this.$media = $(this.media);
+
+            // Create video wrapper
+            this.wrapMedia();
+
             this.$control_wrap = this.$media.parent('.lumiere-vid');
             this.$control_time = $('.lu_currentTime', this.$control_wrap);
             this.$control_duration = $('.lu_durationTime', this.$control_wrap);
@@ -37,7 +47,24 @@
 
                 }, this)
             });
+        
+        },
 
+        // This will wrap the video in a 
+        // predefined or custom html structure
+        wrapMedia: function() {
+            var 
+            // create a placeholder for our media element
+            media_plc = $('<div class="lumiere_vid_placeholder" />'),
+            // make a copy of the html
+            media_el = $('<div>').append(media_plc.clone()).remove().html();
+            this.$media.after(
+                tmpl(lumiere_config.tmpl, {
+                    media_tag: media_el
+                })
+            );
+            // And finally, move our video into it's place
+            $('.lumiere_vid_placeholder').replaceWith(this.$media);
         },
 
         // ****************************
@@ -245,8 +272,41 @@
             this.$control_duration.text(time_f);
         },
 
-    }
+    };
+
+    // Simple JavaScript Templating
+    // John Resig - http://ejohn.org/ - MIT Licensed
+    tmpl = function tmpl(str, data) {
+        // Figure out if we're getting a template, or if we need to
+        // load the template - and be sure to cache the result.
+        var fn = !/\W/.test(str) ?
+          tmpl_cache[str] = tmpl_cache[str] ||
+            tmpl(document.getElementById(str).innerHTML) :
+          
+          // Generate a reusable function that will serve as a template
+          // generator (and which will be cached).
+          new Function("obj",
+            "var p=[],print=function(){p.push.apply(p,arguments);};" +
+            
+            // Introduce the data as local variables using with(){}
+            "with(obj){p.push('" +
+            
+            // Convert the template into pure JavaScript
+            str
+              .replace(/[\r\t\n]/g, " ")
+              .split("<%").join("\t")
+              .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+              .replace(/\t=(.*?)%>/g, "',$1,'")
+              .split("\t").join("');")
+              .split("%>").join("p.push('")
+              .split("\r").join("\\'")
+          + "');}return p.join('');");
+        
+        // Provide some basic currying to the user
+        return data ? fn( data ) : fn;
+    };
 
     exports.Lumiere = Lumiere;
+    exports.lumiere_config = lumiere_config;
 
 })(jQuery, window);
